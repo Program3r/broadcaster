@@ -1,0 +1,47 @@
+<template name="settings">
+    <div id="settings" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3>Settings</h3>
+      </div>
+      <div class="modal-body">
+        <p>
+        {{#each settings}}
+            {{>settingsform}}
+        {{/each}}        
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+        <button class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+</template>
+
+<template name="settingsform">
+<form class="form-horizontal">
+    <div class="control-group">
+      <label class="control-label" for="inputRTMP">RTMP Url</label>
+      <div class="controls">
+        <input type="text" id="inputRTMP" class="input-xxlarge" placeholder="rtmp_proto://server[:port][/application][/stream] options">
+      </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="showPopups">Show Help Popups</label>
+        <div class="controls">
+            <label class="checkbox">
+                <input type="checkbox" {{showpopups}}>
+            </label>
+            </div>
+        </div>
+    </form>
+</template>
+
+
+
+<template name="settingsnotice">
+    <div class="alert fade in alert-error">
+        <button type="button" class="close" data-dismiss="alert">×</button>
+        <strong><i class="icon-exclamation-sign"></i> Attention</strong> You must configure this application to continue.
+    </div>
+</template>

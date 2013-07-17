@@ -1,0 +1,30 @@
+.filetablefile .icon{
+    height:25px;
+    width:25px;
+     cursor:move;
+}
+.file{
+    margin: 5px;
+    background-color: whitesmoke;
+    padding-right: 5px;
+    padding-top: 20px;
+    -moz-box-shadow: 0 0 5px #888;
+    -webkit-box-shadow: 0 0 5px#888;
+    box-shadow: 0 0 5px #888;
+    border-radius: 7px;
+    cursor:move;
+}
+.filename{
+    display:inline-block;
+    margin-left:20px;
+}
+.flv.icon{
+    background: url('/images/filetypes/flv.png');
+    background-size:25px;
+    background-repeat:no-repeat;
+}
+.avi.icon{
+    background: url('/images/filetypes/avi.png');
+    background-size:25px;
+    background-repeat:no-repeat;
+}

@@ -1,0 +1,7 @@
+.popover-title, .popover-content {
+    color:black !important;
+}
+.popover-content{
+    line-height:12px;
+    font-size:10px;
+}

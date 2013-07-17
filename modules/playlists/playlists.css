@@ -1,0 +1,12 @@
+#playlists .playlist h3{
+    color:white;
+}
+
+#playlists .playlist table{
+    background-color:white;
+}
+
+#playlists tbody:nth-child(even) tr td{
+    background-color:#E8E8E8;
+}
+
