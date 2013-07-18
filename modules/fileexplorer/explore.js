@@ -4,8 +4,6 @@ if(Meteor.isClient){
                 this._rendered = true;
                 
         }
-
-    //$("#"+this.id).isotope();
     }
 
     Meteor.startup(function(){
@@ -108,7 +106,11 @@ if(Meteor.isClient){
                 $("#fileexplorer").append(expitem);
                 if(val.filename.indexOf('.flv') != -1){
                     //This must be a video file
-                    expitem.draggable({ revert: true });
+                    expitem.draggable({
+                        revert: "invalid",
+                        connectToSortable:"#playlists .playlistcontainer",
+                        helper:"clone"
+                    });
                 }else{
                     //This must be a folder
                     expitem.addClass('ui-clickable');

@@ -7,11 +7,11 @@ if(Meteor.isClient){
     });
     Template.playlists.rendered = function(){
         if (!this._rendered) {
-            $("#playlists").find("table").droppable({
-                accept:".draggablefile",
-                drop:function(event, ui){
-                    playlists.insert({"fileid":$(ui.draggable).attr('data-fileid')});
-                }
+            $("#playlists").find(".playlistcontainer").sortable({
+              revert: true,
+              receive: function(event, ui){
+                Meteor.call('reCalcTime');
+              }
             });
             this._rendered = true;
         }
@@ -43,10 +43,41 @@ if(Meteor.isClient){
             console.log("ffmpeg -re -i '"+file.path+"/"+file.filename+"' -vcodec libx264 -ab 128k -ac 2 -ar 44100 -r 25 -s 640x480 -vb 660k -f flv 'rtmp://"+Meteor.settings.public.rtmpuser+":"+Meteor.settings.public.rtmppass+"@"+Meteor.settings.public.rtmp+"'");
         },
         'click .encode':function(){
-            Meteor.call('encode');
+            var options = [];
+            
+            $("#playlists .playlistcontainer li").each(function(){
+               var thiss = $(this);
+               options.push({duration:thiss.attr('data-duration'), filename:thiss.attr('data-filename'), path:thiss.attr('data-path')});
+            });
+            console.log(options);
+            Meteor.call('encode', options);
         },
         'click .clearplaylist':function(){
             Meteor.call('clearplaylists');
+        }
+    });
+    Meteor.methods({
+       'reCalcTime':function(){
+            var date = new Date();
+            $("#playlists .playlistcontainer li").each(function(){
+                var duration = $(this).attr("data-duration");
+                var times = duration.split(":");
+                date.setSeconds(date.getSeconds()+parseInt(times[2]));
+                date.setMinutes(date.getMinutes()+parseInt(times[1]));
+                date.setHours(date.getHours()+parseInt(times[0]));
+                
+                console.log(date.getHours());
+                console.log(times[1]);
+                console.log(times[2]);
+            });
+            
+            
+            
+            $("#time").text(date);
+       },
+        'clearplaylists':function(){
+            $("#playlists .playlistcontainer li").remove();
+            Meteor.call('reCalcTime');
         }
     });
 }
@@ -57,42 +88,42 @@ if(Meteor.isServer){
             var filelist = playlists.find({});
             console.log()
         },
-        'encode':function(){
+        'encode':function(options){
             if(Meteor.isServer){
                 console.log("Started");
-                console.log(Meteor.settings)
-                var playlistitems = playlists.find({}).fetch();
+                //var playlistitems = playlists.find({}).fetch();
                 var time = 0;
                 var execSync = Npm.require('exec-sync');
-                console.log('playing');
-                for(i=0;i<playlistitems.length;i++){
-                    
-                    var file = files.findOne({_id:playlistitems[i].fileid});
-                    var fullduration = file.duration;
-                    var hrs = parseInt(file.duration.split(":")[0]);
-                    var min = parseInt(file.duration.split(":")[1]);
-                    var sec = parseInt(file.duration.split(":")[2].toString().split(".")[0])+1;
+                
+                for(i=0;i<options.length;i++){
+                    var theseopt = options[i];
+                    var file = theseopt.filename;
+                    var fullduration = theseopt.duration;
+                    var hrs = parseInt(fullduration.split(":")[0]);
+                    var min = parseInt(fullduration.split(":")[1]);
+                    var sec = parseInt(fullduration.split(":")[2].toString().split(".")[0])+1;
                     var ms = ((sec+(min*60)+(hrs*60*60))*1000)+6000;
                     console.log("Setting: "+time);
-                    var filepath = file.path+"/"+file.filename;
-                        setTimeout(function(){
-                                console.log("Playing: "+filepath);
+                   
+                   
+                   
+                    var filepath = theseopt.path+"/"+file;
+                        setTimeout(function(fpath){
+                                console.log("Playing: "+fpath);
                                 var exec = Npm.require('child_process').exec;
-                                console.log("ffmpeg -re -i '"+filepath+"' -vcodec libx264 -ab 128k -ac 2 -ar 44100 -r 25 -s 640x480 -vb 320k -f flv 'rtmp://"+Meteor.settings.rtmpuser+":"+Meteor.settings.rtmppass+"@"+Meteor.settings.rtmp+"'");
-                                exec("ffmpeg -re -i '"+filepath+"' -vcodec libx264 -ab 128k -ac 2 -ar 44100 -r 25 -s 640x480 -vb 320k -f flv rtmp://"+Meteor.settings.rtmpuser+":"+Meteor.settings.rtmppass+"@"+Meteor.settings.rtmp,
+                                console.log("ffmpeg -re -i '"+fpath+"' -vcodec libx264 -ab 128k -ac 2 -ar 44100 -r 25 -s 640x480 -vb 320k -f flv 'rtmp://"+Meteor.settings.rtmpuser+":"+Meteor.settings.rtmppass+"@"+Meteor.settings.rtmp+"'");
+                                exec("ffmpeg -re -i '"+fpath+"' -vcodec libx264 -ab 128k -ac 2 -ar 44100 -r 25 -s 640x480 -vb 320k -f flv 'rtmp://"+Meteor.settings.rtmpuser+":"+Meteor.settings.rtmppass+"@"+Meteor.settings.rtmp+"'",
                                 function (error, stdout, stderr) {
                                     console.log(error);
                                     console.log(stderr);
                                     console.log(error);
                                 });
-                        }, time);
+                        }, time, [filepath]);
                     time = time+ms;
                     
                 }
+                
             }
-        },
-        'clearplaylists':function(){
-            playlists.remove({});
         }
     });
     

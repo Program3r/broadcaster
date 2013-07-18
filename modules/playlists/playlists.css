@@ -10,3 +10,33 @@
     background-color:#E8E8E8;
 }
 
+#playlists .playlistcontainer{
+    min-height:50px;
+    border: 1px dashed black;
+    border-radius:5px;
+    padding:5px;
+    list-style-type: none;
+}
+
+#playlists .ui-draggable {
+    cursor: move;
+}
+
+#playlists li {
+    padding: 6px;
+    -moz-box-shadow: 0 0 5px #888;
+    -webkit-box-shadow: 0 0 5px#888;
+    box-shadow: 0 0 5px #888;
+    margin:6px;
+    background-color:white;
+    border-radius:5px;
+    transition: background-color .5s;
+    font-weight:bold;
+}
+#playlists .duration {
+    margin-left:10px;
+}
+#time{
+    font-weight:bold;
+    font-size:15px;
+}
