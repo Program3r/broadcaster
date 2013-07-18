@@ -4,7 +4,7 @@ if(Meteor.isClient){
             Meteor.call('getfiles');
             return Template.filetable(files.find({}));
         });
-        $("body").append(fileviewer);
+        //$("body").append(fileviewer);
     });
   
   
@@ -45,7 +45,7 @@ if(Meteor.isClient){
         }
     });
     Template.files.rendered = function(){
-        if (!this._rendered) {    
+        if (!this._rendered) {
             //console.log(container);
             this._rendered = true;
         }

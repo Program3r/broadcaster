@@ -1,0 +1,14 @@
+<template name="fileexplorer">
+    <section class="fileexplorer span">
+        <h3>File Explorer</h3>
+        <select id="repos">
+        </select>
+        <input type="text" id="location"><button class='erase btn btn-danger'><i class='icon-remove'></i></button><button class='folderup btn btn-warning'><i class='icon-circle-arrow-up'></i></button><button class='navigate btn'><i class='icon-search'></i> Go</button>
+        <ul class="well list" id="fileexplorer">
+        
+        </ul>
+    </section>
+</template>
+<template name="exploreritem">
+    <li><i class='{{icon}}'></i> {{filename}}</li>
+</template>

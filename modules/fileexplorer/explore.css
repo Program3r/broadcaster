@@ -1,0 +1,44 @@
+.fileexplorer h3{
+    color:white;
+    margin-left: 23px;
+}
+.fileexplorer select{
+    margin-left: 23px;
+}
+.fileexplorer input{
+    margin-left: 23px;
+}
+.fileexplorer{
+    width: 44%;
+}
+#fileexplorer .item{
+    width:50px;
+    height:50px;
+}
+#fileexplorer{
+    list-style-type: none;
+}
+#fileexplorer .ui-draggable{
+    cursor:move;
+}
+#fileexplorer .ui-clickable{
+    cursor:pointer;
+}
+#fileexplorer li {
+    padding: 6px;
+    -moz-box-shadow: 0 0 5px #888;
+    -webkit-box-shadow: 0 0 5px#888;
+    box-shadow: 0 0 5px #888;
+    margin:6px;
+    background-color:white;
+    border-radius:5px;
+    transition: background-color .5s;
+    font-weight:bold;
+}
+#fileexplorer li:hover {
+    background-color:#40C2EB;
+}
+.fileexplorer .btn{
+    margin-bottom: 10px;
+    margin-left: 10px;
+}
