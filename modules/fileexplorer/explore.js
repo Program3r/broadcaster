@@ -14,6 +14,8 @@ if(Meteor.isClient){
             $("#repos").append(opt);
         });
         Meteor.call('updateExplorer');
+    
+
     });
     Template.fileexplorer.events({
        'click .navigate':function(){
@@ -33,6 +35,8 @@ if(Meteor.isClient){
           Meteor.call('updateExplorer'); 
        }
     });
+
+
 }
 
 if(Meteor.isServer){
@@ -99,7 +103,7 @@ if(Meteor.isClient){
                }else{
                    icon = "icon-film";
                }
-               var expitem = $(Template.exploreritem({filename:val.filename, icon:icon}));
+               var expitem = $(Template.exploreritem({filename:val.filename, icon:icon, duration:val.duration}));
                
                 $("#fileexplorer").append(expitem);
                 if(val.filename.indexOf('.flv') != -1){
@@ -114,6 +118,7 @@ if(Meteor.isClient){
                         Meteor.call('updateExplorer');
                     });
                     expitem.addClass('folder');
+                    expitem.find(".icon-time").css({display:"none"})
                 }
                 
                 $.each(val, function(key, val){
