@@ -81,9 +81,8 @@ if(Meteor.isClient){
             if($("#location").val() > ""){
                 subdir = "/?path="+encodeURIComponent($("#location").val());
             }
-            console.log("http://192.168.1.125:9000/"+$("#repos").val()+subdir);
             $.ajax({
-              url: "http://192.168.1.125:9000/"+$("#repos").val()+subdir,
+              url: "http://"+window.location.hostname+":9000/"+$("#repos").val()+subdir,
               context: document.body,
               dataType:'jsonp',
               jsonpCallback: ""

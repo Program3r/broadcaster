@@ -21,7 +21,11 @@ if(Meteor.isServer){
     Meteor.methods({
         'updateBroadcaster':function(callback){
             var exec = Npm.require('child_process').exec;
-                exec("git pull origin master",
+                exec("git fetch --all",
+                function (error, stdout, stderr) {
+                    console.log(stdout)
+                });
+                exec("git reset --hard origin/master",
                 function (error, stdout, stderr) {
                     console.log(stdout)
                 });
