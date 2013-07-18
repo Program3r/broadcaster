@@ -103,8 +103,10 @@ if(Meteor.isClient){
                
                 $("#fileexplorer").append(expitem);
                 if(val.filename.indexOf('.flv') != -1){
+                    //This must be a video file
                     expitem.draggable({ revert: true });
                 }else{
+                    //This must be a folder
                     expitem.addClass('ui-clickable');
                     expitem.click(function(){
                         var folderpath = $("#location").val()+"/"+$(this).attr('data-filename');
