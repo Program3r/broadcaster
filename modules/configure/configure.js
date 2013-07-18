@@ -24,11 +24,12 @@ if(Meteor.isServer){
                 exec("git fetch --all",
                 function (error, stdout, stderr) {
                     console.log(stdout)
+                    exec("git reset --hard origin/master",
+                    function (error, stdout, stderr) {
+                        console.log(stdout)
+                    });
                 });
-                exec("git reset --hard origin/master",
-                function (error, stdout, stderr) {
-                    console.log(stdout)
-                });
+                
         }
     })
 }
