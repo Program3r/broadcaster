@@ -10,6 +10,22 @@ if(Meteor.isClient){
                     },
                     layoutMode:'straightDown'
                 });
+                
+            $("#addfromsearch").click(function(){
+                for(i=0;i<filedirectory.length;i++){
+                    if(filedirectory[i].filename == $("#filterresults").val()){
+                        var file = filedirectory[i];
+                        var template = $(Template.exploreritem({filename:file.filename, icon:"icon-film", duration:file.duration}));
+                        template.find(".removeitem").click(function(){
+                            $(this).parent().remove(); 
+                        });
+                        template.attr("data-path", file.path);
+                        template.attr("data-duration", file.duration);
+                        template.attr("data-filename", file.filename);
+                        $("#playlists .playlistcontainer").append(template);
+                    }
+                }
+            });
         }
     }
 
@@ -86,6 +102,7 @@ if(Meteor.isServer){
 if(Meteor.isClient){
     var autocompletedata = new Array();
     var filedirectory = [];
+    
     Meteor.methods({
         'updateExplorer':function(options){
             var subdir = "/";
@@ -100,24 +117,10 @@ if(Meteor.isClient){
             }).done(function() {
                 
             });
-            $("#addfromsearch").click(function(){
-                for(i=0;i<filedirectory.length;i++){
-                    if(filedirectory[i].filename == $("#filterresults").val()){
-                        var file = filedirectory[i];
-                        var template = $(Template.exploreritem({filename:file.filename, icon:"icon-film", duration:file.duration}));
-                        template.find(".removeitem").click(function(){
-                            $(this).parent().remove(); 
-                        });
-                        template.attr("data-path", file.path);
-                        template.attr("data-duration", file.duration);
-                        template.attr("data-filename", file.filename);
-                        $("#playlists .playlistcontainer").append(template);
-                    }
-                }
-            });
+
         },
         'loadExplorerData':function(data){
-            $("#fileexplorer").isotope( 'remove', $(".exp-item"));
+            $("#fileexplorer").isotope( 'remove', $("#fileexplorer .exp-item"));
             //var autocompletedata = new Array();
             $.each(data, function(key, val){
                var icon;
@@ -189,7 +192,6 @@ if(Meteor.isClient){
             //$("#fileexplorer").find(".exp-item:not(.folder)").each(function(){
                 //autocompletedata.push($(this).find(".filename").text()); 
             //});
-            
             $("#filterresults").autocomplete({
                 source: autocompletedata,
                 appendTo: "#searchresults",
