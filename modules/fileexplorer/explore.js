@@ -16,6 +16,7 @@ if(Meteor.isClient){
                     if(filedirectory[i].filename == $("#filterresults").val()){
                         var file = filedirectory[i];
                         var template = $(Template.exploreritem({filename:file.filename, icon:"icon-film", duration:file.duration}));
+                        template.addClass("ui-draggable")
                         template.find(".removeitem").click(function(){
                             $(this).parent().remove(); 
                         });
