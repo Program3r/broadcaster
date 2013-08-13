@@ -1,6 +1,39 @@
+.exp-item{
+    min-width:280px;
+}
 .fileexplorer h3{
     color:white;
     margin-left: 23px;
+}
+#searchresults{
+    margin-top:15px;
+}
+#searchresults .ui-autocomplete{
+    list-style-type:none;
+}
+#searchresults .ui-autocomplete li{
+    margin:5px;
+}
+#fileexplorer .removeitem{
+    display:none;
+}
+#searchresults .ui-autocomplete li a{
+    padding:2px;
+    padding-left:10px;
+    padding-right: 95px;
+    background-color:white;
+    border-radius:5px;
+    -moz-box-shadow: 0 0 5px #888;
+    -webkit-box-shadow: 0 0 5px#888;
+    box-shadow: 0 0 5px #888;
+    text-decoration:none;
+}
+#searchresults .ui-autocomplete li a:hover {
+    background-color:#40C2EB;
+    cursor:pointer;
+}
+.disabled{
+    pointer-events:none;
 }
 .fileexplorer select{
     margin-left: 23px;
@@ -15,8 +48,22 @@
     width:50px;
     height:50px;
 }
+.fileexplorer h5{
+    color:white;
+}
+#fileexplorer .exp-item{
+    height: 22px;
+}
+.folder .btn{
+    display:none;
+}
 #fileexplorer{
     list-style-type: none;
+    overflow:visible !important;
+}
+.exp-item button{
+    height: 23px;
+    line-height: 0px;
 }
 #fileexplorer .ui-draggable{
     cursor:move;
@@ -24,7 +71,7 @@
 #fileexplorer .ui-clickable{
     cursor:pointer;
 }
-#fileexplorer li {
+.exp-item {
     padding: 6px;
     -moz-box-shadow: 0 0 5px #888;
     -webkit-box-shadow: 0 0 5px#888;
@@ -35,7 +82,7 @@
     transition: background-color .5s;
     font-weight:bold;
 }
-#fileexplorer li:hover {
+.exp-item:hover {
     background-color:#40C2EB;
 }
 .fileexplorer .btn{
@@ -44,4 +91,47 @@
 }
 .fileexplorer .duration {
     margin-left:10px;
+}
+
+
+
+
+
+.isotope,
+.isotope .isotope-item{
+  /* change duration value to whatever you like */
+  -webkit-transition-duration: 0.8s;
+     -moz-transition-duration: 0.8s;
+      -ms-transition-duration: 0.8s;
+       -o-transition-duration: 0.8s;
+          transition-duration: 0.8s;
+}
+
+.isotope {
+  -webkit-transition-property: height, width;
+     -moz-transition-property: height, width;
+      -ms-transition-property: height, width;
+       -o-transition-property: height, width;
+          transition-property: height, width;
+}
+
+.isotope .isotope-item {
+  -webkit-transition-property: -webkit-transform, opacity;
+     -moz-transition-property:    -moz-transform, opacity;
+      -ms-transition-property:     -ms-transform, opacity;
+       -o-transition-property:      -o-transform, opacity;
+          transition-property:         transform, opacity;
+}
+
+/**** disabling Isotope CSS3 transitions ****/
+
+.isotope.no-transition,
+.isotope.no-transition .isotope-item,
+.isotope .isotope-item.no-transition,
+.isotope .isotope-item.ui-draggable-dragging{
+  -webkit-transition-duration: 0s;
+     -moz-transition-duration: 0s;
+      -ms-transition-duration: 0s;
+       -o-transition-duration: 0s;
+          transition-duration: 0s;
 }

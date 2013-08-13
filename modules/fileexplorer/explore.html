@@ -4,11 +4,16 @@
         <select id="repos">
         </select>
         <input type="text" id="location"><button class='erase btn btn-danger'><i class='icon-remove'></i></button><button class='folderup btn btn-warning'><i class='icon-circle-arrow-up'></i></button><button class='navigate btn'><i class='icon-search'></i> Go</button>
-        <ul class="well list" id="fileexplorer">
+        <h5>Filters</h5>
+        <div class="well">
+            <input type="text" placeholder="Filter Results" class="filterresults" id="filterresults"><button class="btn disabled" id="addfromsearch"><i class="icon-plus"></i></button>
+            <div id="searchresults"></div>
+        </div>
+        <div class="well list" id="fileexplorer">
         
-        </ul>
+        </div>
     </section>
 </template>
 <template name="exploreritem">
-    <li><span class='{{icon}}'></span> <span class='filename'>{{filename}}</span><span class='duration pull-right'><i class="icon-time"></i> {{duration}}</span></li>
+    <div class="exp-item"><span class='{{icon}}'></span> <span class='filename'>{{filename}}</span><span class='duration'><i class="icon-time"></i> {{duration}}</span><!--<button class="btn pull-right"><i class="icon icon-play-circle"></i></button>--><button class="btn pull-right btn-danger removeitem"><i class="icon-minus"></i></button></div>
 </template>

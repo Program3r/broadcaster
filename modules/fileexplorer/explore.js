@@ -2,7 +2,14 @@ if(Meteor.isClient){
     Template.fileexplorer.rendered = function(){
         if (!this._rendered) {
                 this._rendered = true;
-                
+                $("#fileexplorer").isotope({itemSelector : '.exp-item',
+                    getSortData : {
+                        name : function ( $elem ) {
+                          return $elem.find('.filename').text();
+                        }
+                    },
+                    layoutMode:'straightDown'
+                });
         }
     }
 
@@ -77,6 +84,8 @@ if(Meteor.isServer){
 }
 
 if(Meteor.isClient){
+    var autocompletedata = new Array();
+    var filedirectory = [];
     Meteor.methods({
         'updateExplorer':function(options){
             var subdir = "/";
@@ -89,11 +98,27 @@ if(Meteor.isClient){
               dataType:'jsonp',
               jsonpCallback: ""
             }).done(function() {
-            
+                
+            });
+            $("#addfromsearch").click(function(){
+                for(i=0;i<filedirectory.length;i++){
+                    if(filedirectory[i].filename == $("#filterresults").val()){
+                        var file = filedirectory[i];
+                        var template = $(Template.exploreritem({filename:file.filename, icon:"icon-film", duration:file.duration}));
+                        template.find(".removeitem").click(function(){
+                            $(this).parent().remove(); 
+                        });
+                        template.attr("data-path", file.path);
+                        template.attr("data-duration", file.duration);
+                        template.attr("data-filename", file.filename);
+                        $("#playlists .playlistcontainer").append(template);
+                    }
+                }
             });
         },
         'loadExplorerData':function(data){
-            $("#fileexplorer").html("");
+            $("#fileexplorer").isotope( 'remove', $(".exp-item"));
+            //var autocompletedata = new Array();
             $.each(data, function(key, val){
                var icon;
                if(val.filename.indexOf('.flv') == -1){
@@ -103,13 +128,35 @@ if(Meteor.isClient){
                }
                var expitem = $(Template.exploreritem({filename:val.filename, icon:icon, duration:val.duration}));
                
-                $("#fileexplorer").append(expitem);
+               
+               
+               
+                $("#fileexplorer").append(expitem).isotope( 'addItems', expitem );
                 if(val.filename.indexOf('.flv') != -1){
+                    if($.inArray(val.filename, autocompletedata) == -1){
+                        autocompletedata.push(val.filename); 
+                    }
+                    
+                    function isInArray(){
+                        for(i=0;i<filedirectory.length;i++){
+                            if(filedirectory[i].filename == val.filename){
+                                return true;
+                            }
+                        }
+                        return false;
+                    }
+                    if(!isInArray()){
+                        filedirectory.push(val);
+                    }
+                    
                     //This must be a video file
                     expitem.draggable({
                         revert: "invalid",
                         connectToSortable:"#playlists .playlistcontainer",
                         helper:"clone"
+                    });
+                    expitem.on( "drag", function( event, ui ) {
+                        ui.helper.css("-webkit-transform", "");
                     });
                 }else{
                     //This must be a folder
@@ -126,6 +173,32 @@ if(Meteor.isClient){
                 $.each(val, function(key, val){
                    expitem.attr("data-"+key, val); 
                 });
+            });
+            $("#fileexplorer").isotope({
+                itemSelector : '.exp-item',
+                getSortData : {
+                    name : function ( $elem ) {
+                      return $elem.find('.filename').text();
+                    }
+                },
+                layoutMode:'straightDown',
+                sortBy : 'name'
+            });
+                        
+            
+            //$("#fileexplorer").find(".exp-item:not(.folder)").each(function(){
+                //autocompletedata.push($(this).find(".filename").text()); 
+            //});
+            
+            $("#filterresults").autocomplete({
+                source: autocompletedata,
+                appendTo: "#searchresults",
+                select: function( event, ui ) {
+                    $("#addfromsearch").removeClass("disabled");
+                },
+                search: function( event, ui ) {
+                    $("#addfromsearch").addClass("disabled");
+                }
             });
         }
     });

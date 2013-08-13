@@ -4,12 +4,23 @@ if(Meteor.isClient){
             return Template.playlists(playlists.find({}));
         });
         $("body").append(playlistshtml);
+        Meteor.call('reCalcTime');
     });
     Template.playlists.rendered = function(){
         if (!this._rendered) {
             $("#playlists").find(".playlistcontainer").sortable({
               revert: true,
               receive: function(event, ui){
+                $("#playlists").find(".exp-item").each(function(){
+                   $(this).css("position", ""); 
+                   $(this).css("top", "");
+                   $(this).css("left", ""); 
+                   $(this).css("-webkit-transform", "");
+                   $(this).tagName = 'li';
+                   $(this).find(".removeitem").click(function(){
+                      $(this).parent().remove(); 
+                   });
+                });
                 Meteor.call('reCalcTime');
               }
             });
@@ -45,7 +56,7 @@ if(Meteor.isClient){
         'click .encode':function(){
             var options = [];
             
-            $("#playlists .playlistcontainer li").each(function(){
+            $("#playlists .playlistcontainer .exp-item").each(function(){
                var thiss = $(this);
                options.push({duration:thiss.attr('data-duration'), filename:thiss.attr('data-filename'), path:thiss.attr('data-path')});
             });
@@ -59,24 +70,22 @@ if(Meteor.isClient){
     Meteor.methods({
        'reCalcTime':function(){
             var date = new Date();
-            $("#playlists .playlistcontainer li").each(function(){
+            $("#playlists .playlistcontainer .exp-item").each(function(){
                 var duration = $(this).attr("data-duration");
                 var times = duration.split(":");
                 date.setSeconds(date.getSeconds()+parseInt(times[2]));
                 date.setMinutes(date.getMinutes()+parseInt(times[1]));
                 date.setHours(date.getHours()+parseInt(times[0]));
-                
-                console.log(date.getHours());
-                console.log(times[1]);
-                console.log(times[2]);
             });
             
             
             
             $("#time").text(date);
+            
+            setTimeout(function(){Meteor.call('reCalcTime');}, 1000);
        },
         'clearplaylists':function(){
-            $("#playlists .playlistcontainer li").remove();
+            $("#playlists .playlistcontainer .exp-item").remove();
             Meteor.call('reCalcTime');
         }
     });
@@ -86,7 +95,6 @@ if(Meteor.isServer){
     Meteor.methods({
         'playplaylist':function(){
             var filelist = playlists.find({});
-            console.log()
         },
         'encode':function(options){
             if(Meteor.isServer){

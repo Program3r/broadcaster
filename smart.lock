@@ -2,13 +2,19 @@
   "meteor": {},
   "dependencies": {
     "basePackages": {
-      "npm": {}
+      "npm": {},
+      "sync-methods": {}
     },
     "packages": {
       "npm": {
         "git": "https://github.com/arunoda/meteor-npm.git",
         "tag": "v0.1.4",
         "commit": "68ab2b952ab21a5bbba879b37be9385ec8ff6d63"
+      },
+      "sync-methods": {
+        "git": "https://github.com/ianserlin/meteor-sync-methods.git",
+        "tag": "v0.1.1",
+        "commit": "2a7b094d54f3fb7c9acebbe10b68f9db1e5f156b"
       }
     }
   }
