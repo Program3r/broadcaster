@@ -27,6 +27,17 @@ if(Meteor.isClient){
                     }
                 }
             });
+            $(document).ready(function(){
+                $("#playlists").delegate('.preview', 'click', function(event){
+                    var item = $(event.toElement).closest(".exp-item");
+                    var path = item.attr("data-path");
+                    var filename = item.attr("data-filename");
+                    var url = path;
+                    
+                    $("#previewPlayer").html(Template.videopreview({url:"http://"+window.location.hostname+":8200/media"+path+"/"+filename}))
+                    $('#previewModal').modal('show');
+                });
+            });
         }
     }
 
@@ -57,7 +68,6 @@ if(Meteor.isClient){
           Meteor.call('updateExplorer'); 
        }
     });
-
 
 }
 

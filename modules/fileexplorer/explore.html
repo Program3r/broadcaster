@@ -1,4 +1,5 @@
 <template name="fileexplorer">
+    {{>previewmodal}}
     <section class="fileexplorer span">
         <h3>File Explorer</h3>
         <select id="repos">
@@ -9,11 +10,12 @@
             <input type="text" placeholder="Filter Results" class="filterresults" id="filterresults"><button class="btn disabled" id="addfromsearch"><i class="icon-plus"></i></button>
             <div id="searchresults"></div>
         </div>
+        
         <div class="well list" id="fileexplorer">
         
         </div>
     </section>
 </template>
 <template name="exploreritem">
-    <div class="exp-item"><span class='{{icon}}'></span> <span class='filename'>{{filename}}</span><span class='duration'><i class="icon-time"></i> {{duration}}</span><!--<button class="btn pull-right"><i class="icon icon-play-circle"></i></button>--><button class="btn pull-right btn-danger removeitem"><i class="icon-minus"></i></button></div>
+    <div class="exp-item"><span class='{{icon}}'></span> <span class='filename'>{{filename}}</span><span class='duration'><i class="icon-time"></i> {{duration}}</span>{{>previewbtn}}<button class="btn pull-right btn-danger removeitem"><i class="icon-minus"></i></button></div>
 </template>

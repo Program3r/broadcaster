@@ -1,0 +1,26 @@
+<template name='videopreview'>
+     <object width='500' height='370' id='flvPlayer'>
+      <param name='allowFullScreen' value='true'>
+       <param name="allowScriptAccess" value="always"> 
+      <param name='movie' value='lib/OSplayer.swf?movie={{url}}&btncolor=0x333333&accentcolor=0x31b8e9&txtcolor=0xdddddd&volume=30&autoload=on&autoplay=off&vTitle=Super Mario Brothers Lego Edition&showTitle=yes'>
+      <embed src='lib/OSplayer.swf?movie={{url}}&btncolor=0x333333&accentcolor=0x31b8e9&txtcolor=0xdddddd&volume=30&autoload=on&autoplay=off&vTitle=Super Mario Brothers Lego Edition&showTitle=yes' width='500' height='370' allowFullScreen='true' type='application/x-shockwave-flash' allowScriptAccess='always'>
+     </object>
+     <!--http://192.168.1.135:8200/media/test.flv-->
+</template>
+<template name='previewbtn'>
+    <button class="btn preview pull-right"><i class="icon icon-play-circle"></i></button>
+</template>
+<template name="previewmodal">
+    <div id="previewModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="previewModalLabel"></h3>
+      </div>
+      <div class="modal-body">
+        <div id="previewPlayer"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+      </div>
+    </div>
+</template>
