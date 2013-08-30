@@ -14,9 +14,6 @@
 #searchresults .ui-autocomplete li{
     margin:5px;
 }
-#fileexplorer .removeitem{
-    display:none;
-}
 #searchresults .ui-autocomplete li a{
     padding:2px;
     padding-left:10px;

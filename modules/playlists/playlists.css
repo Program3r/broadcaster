@@ -40,3 +40,7 @@
     font-weight:bold;
     font-size:15px;
 }
+.playlistcontrols button{
+    margin-bottom:10px;
+    margin-left:10px;
+}

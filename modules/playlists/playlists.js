@@ -1,17 +1,15 @@
+playlistpersist = new Meteor.Collection("playlistpersist");
+
 if(Meteor.isClient){
     Meteor.startup(function(){
-        var playlistshtml = Meteor.render(function(){
-            return Template.playlists(playlists.find({}));
-        });
-        $("body").append(playlistshtml);
         Meteor.call('reCalcTime');
     });
     Template.playlists.rendered = function(){
-        if (!this._rendered) {
+       // if (!this._rendered) {
             $("#playlists").find(".playlistcontainer").sortable({
               revert: true,
               receive: function(event, ui){
-                $("#playlists").find(".exp-item").each(function(){
+                /*$("#playlists").find(".exp-item").each(function(){
                    $(this).css("position", ""); 
                    $(this).css("top", "");
                    $(this).css("left", ""); 
@@ -19,24 +17,33 @@ if(Meteor.isClient){
                    $(this).tagName = 'li';
                    $(this).find(".removeitem").click(function(){
                       $(this).parent().remove(); 
-                   });
-                });
+                   });});*/
+                    $("#playlists").find(".isotope-item").each(function(){
+                        var data = {icon:"icon-film", order:"", filename:$(this).attr("data-filename"), duration:$(this).attr("data-duration"), path:$(this).attr("data-path"), results:$(this).attr("data-results")};
+                        playlistpersist.insert(data);
+                        $(this).remove();
+                    });
                 Meteor.call('reCalcTime');
+              },
+              stop:function(event, ui){
+                  $("#playlists").find(".exp-item").each(function(index){
+                    playlistpersist.update($(this).attr("id"), {$set: {order: index}});
+                    console.log($(this).attr("id"))
+                  });
+                  Meteor.call('reCalcTime');
               }
             });
-            this._rendered = true;
+            //this._rendered = true;
+        //}
+    }
+    Template.exploreritem.events({
+        'click .removeitem':function(){
+            playlistpersist.remove(this._id)
         }
-    }
+    });
     Template.playlists.playlistitems = function(){
-        return playlists.find({});
-    }
-    Template.playlists.filename = function(){
-        var thefile = files.findOne({_id:this.fileid});
-        return thefile.filename;
-    }
-    Template.playlists.duration = function(){
-        var thefile = files.findOne({_id:this.fileid});
-        return thefile.duration;
+        var items = playlistpersist.find({}).fetch();
+        return _.sortBy(items, function(item){return item.order});
     }
     
     //Add Function To Nav
@@ -60,11 +67,10 @@ if(Meteor.isClient){
                var thiss = $(this);
                options.push({duration:thiss.attr('data-duration'), filename:thiss.attr('data-filename'), path:thiss.attr('data-path')});
             });
-            console.log(options);
             Meteor.call('encode', options);
         },
         'click .clearplaylist':function(){
-            Meteor.call('clearplaylists');
+            $.each(playlistpersist.find().fetch(), function(){playlistpersist.remove(this._id)});
         }
     });
     Meteor.methods({
@@ -96,9 +102,17 @@ if(Meteor.isServer){
         'playplaylist':function(){
             var filelist = playlists.find({});
         },
+        'deletefile':function(options){
+            var fs = Npm.require('fs');
+            fs.unlink(options.file, function (err) {
+              if (err) throw err;
+              console.log('successfully deleted '+options.file);
+            });
+            
+        },
         'encode':function(options){
             if(Meteor.isServer){
-                console.log("Started");
+
                 //var playlistitems = playlists.find({}).fetch();
                 var time = 0;
                 var execSync = Npm.require('exec-sync');

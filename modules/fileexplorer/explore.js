@@ -15,7 +15,7 @@ if(Meteor.isClient){
                 for(i=0;i<filedirectory.length;i++){
                     if(filedirectory[i].filename == $("#filterresults").val()){
                         var file = filedirectory[i];
-                        var template = $(Template.exploreritem({filename:file.filename, icon:"icon-film", duration:file.duration}));
+                        /*var template = $(Template.exploreritem({filename:file.filename, icon:"icon-film", duration:file.duration}));
                         template.addClass("ui-draggable")
                         template.find(".removeitem").click(function(){
                             $(this).parent().remove(); 
@@ -24,6 +24,10 @@ if(Meteor.isClient){
                         template.attr("data-duration", file.duration);
                         template.attr("data-filename", file.filename);
                         $("#playlists .playlistcontainer").append(template);
+                        */
+                        
+                        var data = {order:"", filename:file.filename, duration:file.duration, path:file.path, icon:"icon-film"};
+                        playlistpersist.insert(data);
                     }
                 }
             });
@@ -36,6 +40,11 @@ if(Meteor.isClient){
                     
                     $("#previewPlayer").html(Template.videopreview({url:"http://"+window.location.hostname+":8200/media"+path+"/"+filename}))
                     $('#previewModal').modal('show');
+                });
+                $("#fileexplorer").delegate('.removeitem', 'click', function(event){
+                    var thiss = $(this).parents(".exp-item");
+                    Meteor.call('deletefile', {file:$(thiss).attr("data-path")+"/"+$(thiss).attr("data-filename")});
+                    setTimeout(function(){Meteor.call('updateExplorer');}, 1000);
                 });
             });
         }
@@ -117,7 +126,8 @@ if(Meteor.isClient){
     Meteor.methods({
         'updateExplorer':function(options){
             var subdir = "/";
-            if($("#location").val() > ""){
+            
+            if($("#location").val() > "" && $("#location").val().indexOf("..") == -1){
                 subdir = "/?path="+encodeURIComponent($("#location").val());
             }
             $.ajax({

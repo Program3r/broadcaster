@@ -31,15 +31,26 @@
     <section id="playlists" class="span">
         <div class="playlist">
             <h3>Playlist<button class="encode pull-right btn btn-success"><i class="icon-share-alt"></i> Encode</button><button class="clearplaylist pull-right btn btn-warning" style="margin-right:20px;"><i class="icon-minus"></i> Clear Playlist</button></h3>
+            <div>{{!>playlistcontrols}}</div>
             <div class="well">
                     <div id="time"></div>
                     <ul class="playlistcontainer">
                     {{#each playlistitems}}
-                        <span>{{filename}}</span>
-                        <span>{{duration}}</span>
+                        {{>exploreritem}}
                     {{/each}}
                     </ul>
                 </table>
             </div>
     </section>
+</template>
+
+
+<template name="playlistcontrols">
+    <div class="playlistcontrols">
+    <input type="text" placeholder="untitled">
+    <button class='save btn btn-success'>Save</button>
+    <select>
+        {{playlists}}
+    </select>
+    </div>
 </template>
