@@ -14,6 +14,7 @@
 #searchresults .ui-autocomplete li{
     margin:5px;
 }
+
 #searchresults .ui-autocomplete li a{
     padding:2px;
     padding-left:10px;
@@ -40,6 +41,9 @@
 }
 .fileexplorer{
     width: 44%;
+}
+#fileexplorer .ui-draggable-dragging button{
+    display:none;
 }
 #fileexplorer .item{
     width:50px;
