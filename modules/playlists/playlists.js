@@ -1,4 +1,5 @@
 playlistpersist = new Meteor.Collection("playlistpersist");
+encoder = new Meteor.Collection("encoder");
 
 if(Meteor.isClient){
     Meteor.startup(function(){
@@ -112,40 +113,42 @@ if(Meteor.isServer){
         },
         'encode':function(options){
             if(Meteor.isServer){
-
                 //var playlistitems = playlists.find({}).fetch();
-                var time = 0;
-                var execSync = Npm.require('exec-sync');
+                var time = 1;
                 
                 for(i=0;i<options.length;i++){
                     var theseopt = options[i];
-                    var file = theseopt.filename;
+                    encoder.insert(theseopt);
+                    /*var file = theseopt.filename;
                     var fullduration = theseopt.duration;
                     var hrs = parseInt(fullduration.split(":")[0]);
                     var min = parseInt(fullduration.split(":")[1]);
                     var sec = parseInt(fullduration.split(":")[2].toString().split(".")[0])+1;
                     var ms = ((sec+(min*60)+(hrs*60*60))*1000)+6000;
-                    console.log("Setting: "+time);
-                   
-                   
-                   
+
                     var filepath = theseopt.path+"/"+file;
                         setTimeout(function(fpath){
-                                console.log("Playing: "+fpath);
-                                var exec = Npm.require('child_process').exec;
-                                console.log("ffmpeg -re -i '"+fpath+"' -vcodec libx264 -ab 128k -ac 2 -ar 44100 -r 25 -s 640x480 -vb 320k -f flv 'rtmp://"+Meteor.settings.rtmpuser+":"+Meteor.settings.rtmppass+"@"+Meteor.settings.rtmp+"'");
-                                exec("ffmpeg -re -i '"+fpath+"' -vcodec libx264 -ab 128k -ac 2 -ar 44100 -r 25 -s 640x480 -vb 320k -f flv 'rtmp://"+Meteor.settings.rtmpuser+":"+Meteor.settings.rtmppass+"@"+Meteor.settings.rtmp+"'",
-                                function (error, stdout, stderr) {
-                                    console.log(error);
-                                    console.log(stderr);
-                                    console.log(error);
-                                });
+                           var Fiber = Npm.require('fibers');
+                            Fiber(function() {
+                                //Meteor.call('remcmd', {cmd:"ffmpeg -re -i '"+fpath+"' -vcodec libx264 -ab 128k -ac 2 -ar 44100 -r 25 -s 640x480 -vb 320k -f flv 'rtmp://"+Meteor.settings.rtmpuser+":"+Meteor.settings.rtmppass+"@"+Meteor.settings.rtmp+"'"});
+                            }).run();
                         }, time, [filepath]);
                     time = time+ms;
-                    
+                    */
                 }
-                
+                Meteor.call('encodeNext');
             }
+            
+        },
+        'encodeNext':function(){
+          
+           var Fiber = Npm.require('fibers');
+            Fiber(function() {
+                var file = encoder.findOne({});
+                console.log(file);
+                Meteor.call('remcmd', {cmd:"ffmpeg -re -i '"+file.path+"/"+file.filename+"' -vcodec libx264 -ab 128k -ac 2 -ar 44100 -r 25 -s 640x480 -vb 320k -f flv 'rtmp://"+Meteor.settings.rtmpuser+":"+Meteor.settings.rtmppass+"@"+Meteor.settings.rtmp+"'"});
+                
+            }).run();
         }
     });
     
