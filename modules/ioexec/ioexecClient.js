@@ -19,7 +19,7 @@ if(Meteor.isClient){
                     var time = 0;
                     for(k=0;k<sec;k++){
                         setTimeout(function(o){
-                            $("#progress .bar").attr('style', 'width:'+(100 / sec)*o + '%');
+                            $("#progress .bar").attr('style', 'width:'+(100 / (ms / 1000))*o + '%');
                         }, k*1000, k);
                     }
                 }else if(data.status == "exited"){
