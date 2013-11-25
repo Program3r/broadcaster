@@ -107,7 +107,7 @@ if(Meteor.isServer){
             fs.readdir(path, function(err, filelist){
                 var filedata = [];
                 for(i=0;i<filelist.length;i++){
-                    var execSync = Npm.require('exec-sync');
+                    var execSync = Meteor.require('exec-sync');
                     var result = execSync("ffmpeg -i '"+path+"/"+filelist[i]+"' 2>&1 | grep Duration");
                     var duration = result.split(",")[0].toString().replace("Duration: ", "");
                     filedata.push({filename:filelist[i], duration:duration.replace(/ /g,''), path:path, results:result});

@@ -1,0 +1,8 @@
+{
+    "rtmp":"",
+    "rtmpuser":"",
+    "rtmppass":"",
+    "public":{
+    "videoRepos":["/root/videos1","/root/videos2"]
+    }
+} 

@@ -8,30 +8,35 @@ if(Meteor.isClient){
     Template.playlists.rendered = function(){
        // if (!this._rendered) {
             $("#playlists").find(".playlistcontainer").sortable({
-              revert: true,
+              revert:true,
               receive: function(event, ui){
-                /*$("#playlists").find(".exp-item").each(function(){
+                $("#playlists").find(".exp-item").each(function(){
                    $(this).css("position", ""); 
                    $(this).css("top", "");
                    $(this).css("left", ""); 
                    $(this).css("-webkit-transform", "");
                    $(this).tagName = 'li';
+                   
                    $(this).find(".removeitem").click(function(){
-                      $(this).parent().remove(); 
-                   });});*/
-                    $("#playlists").find(".isotope-item").each(function(){
-                        var data = {icon:"icon-film", order:"", filename:$(this).attr("data-filename"), duration:$(this).attr("data-duration"), path:$(this).attr("data-path"), results:$(this).attr("data-results")};
-                        playlistpersist.insert(data);
-                        $(this).remove();
-                    });
+                      playlistpersist.remove($(this).parent().attr('id')); 
+                   });
+               });
+
                 Meteor.call('reCalcTime');
               },
               stop:function(event, ui){
-                  $("#playlists").find(".exp-item").each(function(index){
-                    playlistpersist.update($(this).attr("id"), {$set: {order: index}});
-                    console.log($(this).attr("id"))
-                  });
-                  Meteor.call('reCalcTime');
+                    $("#playlists").find(".exp-item").each(function(index){
+                        var thisItem = $(this);
+                        
+                        if(thisItem.hasClass('isotope-item')){
+                            var data = {icon:"icon-film", order:index, filename:$(this).attr("data-filename"), duration:$(this).attr("data-duration"), path:$(this).attr("data-path"), results:$(this).attr("data-results")};
+                            playlistpersist.insert(data);
+                            thisItem.remove();
+                        }else{
+                            playlistpersist.update($(this).attr('id'), {$set:{order:index}});
+                        }
+                    });
+                    Meteor.call('reCalcTime');
               }
             });
             //this._rendered = true;
@@ -53,6 +58,15 @@ if(Meteor.isClient){
             playlists.insert({});
         }
     });
+    //Add functions to timepicker
+    Template.timecontrols.rendered = function(){
+        $(this.firstNode).timepicker({ 'timeFormat': 'H:i:s' });
+    }
+    Template.timecontrols.events({
+        'click .setstart':function(){
+            $("#autostarttime").toggleClass('auto-start')
+        }
+    })
     Template.playlists.events({
         'click .encodefile':function(){
             var file = files.findOne({_id:this.fileid});
@@ -92,6 +106,30 @@ if(Meteor.isClient){
             
             $("#time").text(date);
             
+            if($("#autostarttime").hasClass('auto-start')){
+                function fm(n){return n<10? '0'+n:''+n;}
+                var now = new Date();
+                var starttime = $("#autostarttime").val();
+                var startstring = fm(now.getHours())+":"+fm(now.getMinutes())+":"+fm(now.getSeconds());
+                
+                console.log(startstring);
+                console.log(starttime);
+                if(startstring == starttime){
+                    var options = [];
+                    $(".encode").removeClass("btn-success");
+                    $(".encode").addClass("btn-danger");
+                    $(".encode").addClass("disabled");
+                    $(".clearplaylist").addClass("disabled");
+                    $("#playlists .playlistcontainer .exp-item").each(function(){
+                       var thiss = $(this);
+                       options.push({_id:thiss.attr('id'),duration:thiss.attr('data-duration'), filename:thiss.attr('data-filename'), path:thiss.attr('data-path')});
+                    });
+                    $("#autostarttime").toggleClass('auto-start');
+                    Meteor.call('encode', options);
+                }
+            }
+            
+            
             setTimeout(function(){Meteor.call('reCalcTime');}, 1000);
        },
         'clearplaylists':function(){
@@ -115,6 +153,7 @@ if(Meteor.isServer){
             
         },
         'encode':function(options){
+            
             if(Meteor.isServer){
                 var encoderitems = encoder.find({}).fetch();
                 for(i=0;i<encoderitems.length;i++){
@@ -150,6 +189,7 @@ if(Meteor.isServer){
             
         },
         'encodeNext':function(){
+          console.log('encoding!');
            var Fiber = Npm.require('fibers');
             Fiber(function() {
 
@@ -157,6 +197,7 @@ if(Meteor.isServer){
                 
                 if(file != undefined){
                     //Meteor.call('encodeNext');
+                    
                     Meteor.call('remcmd', {channel:"ffmpeg", sock:{file:file}, cmd:"ffmpeg -re -i '"+file.path+"/"+file.filename+"' -vcodec libx264 -ab 128k -ac 2 -ar 44100 -r 25 -s 640x480 -vb 320k -f flv 'rtmp://"+Meteor.settings.rtmpuser+":"+Meteor.settings.rtmppass+"@"+Meteor.settings.rtmp+"'", callback:function(){
                         
                         encoder.remove(encoder.findOne({})._id);

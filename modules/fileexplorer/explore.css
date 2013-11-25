@@ -40,7 +40,7 @@
     margin-left: 23px;
 }
 .fileexplorer{
-    width: 44%;
+    width: 100%;
 }
 #fileexplorer .ui-draggable-dragging button{
     display:none;

@@ -1,0 +1,5 @@
+#!/bin/bash
+
+    IP_LOCAL=$(/sbin/ifconfig | sed -n '2 p' | awk '{print $2}' | cut -d':' -f 2)
+    export MONGO_URL=mongodb://admin:admin@localhost:27017/broadcaster
+    mrt --settings settings.json
