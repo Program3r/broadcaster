@@ -65,6 +65,9 @@ if(Meteor.isClient){
     Template.timecontrols.events({
         'click .setstart':function(){
             $("#autostarttime").toggleClass('auto-start')
+        },
+        'click .erase':function(){
+            $("#autostarttime").val();
         }
     })
     Template.playlists.events({
@@ -76,16 +79,45 @@ if(Meteor.isClient){
             console.log("ffmpeg -re -i '"+file.path+"/"+file.filename+"' -vcodec libx264 -ab 128k -ac 2 -ar 44100 -r 25 -s 640x480 -vb 660k -f flv 'rtmp://"+Meteor.settings.public.rtmpuser+":"+Meteor.settings.public.rtmppass+"@"+Meteor.settings.public.rtmp+"'");
         },
         'click .encode':function(){
-            var options = [];
             $(".encode").removeClass("btn-success");
             $(".encode").addClass("btn-danger");
             $(".encode").addClass("disabled");
             $(".clearplaylist").addClass("disabled");
-            $("#playlists .playlistcontainer .exp-item").each(function(){
-               var thiss = $(this);
-               options.push({_id:thiss.attr('id'),duration:thiss.attr('data-duration'), filename:thiss.attr('data-filename'), path:thiss.attr('data-path')});
-            });
-            Meteor.call('encode', options);
+            
+            
+            function go(){
+                var options = [];
+                $("#playlists .playlistcontainer .exp-item").each(function(){
+                   var thiss = $(this);
+                   options.push({_id:thiss.attr('id'),duration:thiss.attr('data-duration'), filename:thiss.attr('data-filename'), path:thiss.attr('data-path')});
+                });
+                Meteor.call('encode', options);
+            }
+            
+            
+            
+            if($("#autostarttime").val() > ""){
+                function fm(n){return n<10? '0'+n:''+n;}
+                var now = new Date().getTime();
+                var inthefuture = new Date();
+                var starttime = $("#autostarttime").val();
+                var timesplit = starttime.split(":");
+                
+                inthefuture.setHours(timesplit[0]);
+                inthefuture.setMinutes(timesplit[1]);
+                inthefuture.setSeconds(timesplit[2]);
+                
+                var futurems = inthefuture.getTime() - now;
+                
+                setTimeout(function(){go();}, futurems);
+                
+            }else{
+                go();
+            }
+            
+            
+            
+            
         },
         'click .clearplaylist':function(){
             $.each(playlistpersist.find().fetch(), function(){playlistpersist.remove(this._id)});
@@ -106,28 +138,7 @@ if(Meteor.isClient){
             
             $("#time").text(date);
             
-            if($("#autostarttime").hasClass('auto-start')){
-                function fm(n){return n<10? '0'+n:''+n;}
-                var now = new Date();
-                var starttime = $("#autostarttime").val();
-                var startstring = fm(now.getHours())+":"+fm(now.getMinutes())+":"+fm(now.getSeconds());
-                
-                console.log(startstring);
-                console.log(starttime);
-                if(startstring == starttime){
-                    var options = [];
-                    $(".encode").removeClass("btn-success");
-                    $(".encode").addClass("btn-danger");
-                    $(".encode").addClass("disabled");
-                    $(".clearplaylist").addClass("disabled");
-                    $("#playlists .playlistcontainer .exp-item").each(function(){
-                       var thiss = $(this);
-                       options.push({_id:thiss.attr('id'),duration:thiss.attr('data-duration'), filename:thiss.attr('data-filename'), path:thiss.attr('data-path')});
-                    });
-                    $("#autostarttime").toggleClass('auto-start');
-                    Meteor.call('encode', options);
-                }
-            }
+
             
             
             setTimeout(function(){Meteor.call('reCalcTime');}, 1000);

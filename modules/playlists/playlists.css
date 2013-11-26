@@ -37,11 +37,16 @@
 #playlists .ui-draggable {
     cursor: move;
 }
-.setstart{
+#playlists .erase{
     margin-bottom: 10px;
     margin-left: 10px;
 }
-
+#autostarttime.auto-start{
+    background-color: lightgreen;
+}
+#autostarttime{
+    width:100px;
+}
 /*#playlists li {
     padding: 6px;
     -moz-box-shadow: 0 0 5px #888;
