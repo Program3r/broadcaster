@@ -74,7 +74,7 @@ if(Meteor.isClient){
            Meteor.call('updateExplorer');
        },
        'change #repos':function(){
-          Meteor.call('updateExplorer'); 
+          Meteor.call('updateExplorer', {reset:true}); 
        }
     });
 
@@ -106,13 +106,17 @@ if(Meteor.isServer){
             var fs = Npm.require('fs');
             fs.readdir(path, function(err, filelist){
                 var filedata = [];
-                for(i=0;i<filelist.length;i++){
-                    var execSync = Meteor.require('exec-sync');
-                    var result = execSync("ffmpeg -i '"+path+"/"+filelist[i]+"' 2>&1 | grep Duration");
-                    var duration = result.split(",")[0].toString().replace("Duration: ", "");
-                    filedata.push({filename:filelist[i], duration:duration.replace(/ /g,''), path:path, results:result});
+                if(filelist != undefined){
+                    for(i=0;i<filelist.length;i++){
+                        var execSync = Meteor.require('exec-sync');
+                        var result = execSync("ffmpeg -i '"+path+"/"+filelist[i]+"' 2>&1 | grep Duration");
+                        var duration = result.split(",")[0].toString().replace("Duration: ", "");
+                        filedata.push({filename:filelist[i], duration:duration.replace(/ /g,''), path:path, results:result});
+                    }
+                    res.send("Meteor.call('loadExplorerData', "+JSON.stringify(filedata)+")");
+                }else{
+                    res.send("Meteor.call('loadExplorerData', [])");
                 }
-                res.send("Meteor.call('loadExplorerData', "+JSON.stringify(filedata)+")");
             });
         });
         app.listen(9000);
@@ -125,6 +129,16 @@ if(Meteor.isClient){
     
     Meteor.methods({
         'updateExplorer':function(options){
+            if(options == undefined){
+                var options = {};
+            }
+            var defaults = {
+            }
+            $.extend(options, defaults);
+            
+            if(options.reset == true){
+                $("#location").val('');
+            }
             var subdir = "/";
             
             if($("#location").val() > "" && $("#location").val().indexOf("..") == -1){
