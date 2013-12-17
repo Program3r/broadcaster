@@ -1,0 +1,10 @@
+#!monit
+set logfile /var/log/broadcaster.log
+
+check process nodejs with pidfile "/var/run/broadcaster.pid"
+    start program = "/sbin/start broadcaster"
+    stop program  = "/sbin/stop broadcaster"
+    if failed port 3000 protocol HTTP
+        request /
+        with timeout 10 seconds
+        then restart
