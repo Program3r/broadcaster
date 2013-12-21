@@ -17,5 +17,9 @@
     </section>
 </template>
 <template name="exploreritem">
-    <div class="exp-item" id="{{_id}}" data-order="{{order}}" data-filename="{{filename}}" data-duration="{{duration}}" data-path="{{path}}"><span class='{{icon}}'></span> <span class='filename'>{{filename}}</span><span class='duration'><i class="icon-time"></i> {{duration}}</span>{{>previewbtn}}<button class="btn pull-right btn-danger removeitem"><i class="icon-minus"></i></button></div>
+    <div class="exp-item" id="{{_id}}" data-order="{{order}}" data-filename="{{filename}}" data-duration="{{duration}}" data-path="{{path}}">{{#if status}}{{>goodbad}}{{/if}}<span class='{{icon}}'></span> <span class='filename'>{{filename}}</span><span class='duration'><i class="icon-time"></i> {{duration}}</span>{{>previewbtn}}<button class="btn pull-right btn-danger removeitem"><i class="icon-minus"></i></button></div>
+</template>
+
+<template name="goodbad">
+    <span class='goodbad'><i class="{{icon}}"></i></span>
 </template>

@@ -1,4 +1,19 @@
 if(Meteor.isClient){
+    
+    
+    Template.goodbad.icon = function(){
+        
+        if(this.status.indexOf('Error:') > -1){
+            return "icon-exclamation-sign blink"
+        }else{
+            return "icon-ok-sign"
+        }
+        
+    }
+    Template.goodbad.rendered = function(){
+        console.log(this);
+    }
+    
     Template.fileexplorer.rendered = function(){
         if (!this._rendered) {
                 this._rendered = true;
@@ -110,8 +125,9 @@ if(Meteor.isServer){
                     for(i=0;i<filelist.length;i++){
                         var execSync = Meteor.require('exec-sync');
                         var result = execSync("ffmpeg -i '"+path+"/"+filelist[i]+"' 2>&1 | grep Duration");
+                        var statustext = execSync("/root/flvcheck -n -f"+path+"/"+filelist[i]);
                         var duration = result.split(",")[0].toString().replace("Duration: ", "");
-                        filedata.push({filename:filelist[i], duration:duration.replace(/ /g,''), path:path, results:result});
+                        filedata.push({filename:filelist[i], duration:duration.replace(/ /g,''), path:path, results:result, status:statustext});
                     }
                     res.send("Meteor.call('loadExplorerData', "+JSON.stringify(filedata)+")");
                 }else{
@@ -164,8 +180,8 @@ if(Meteor.isClient){
                }else{
                    icon = "icon-film";
                }
-               var expitem = $(Template.exploreritem({filename:val.filename, icon:icon, duration:val.duration}));
-               
+               //var expitem = $(Template.exploreritem({filename:val.filename, icon:icon, duration:val.duration}));
+               var expitem = $(Template.exploreritem(val));
                
                
                

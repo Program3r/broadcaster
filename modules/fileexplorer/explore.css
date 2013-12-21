@@ -1,3 +1,21 @@
+@keyframes blink {
+    0% { opacity: 0; }
+    50% { opacity: 1; }
+    100% { opacity: 0; }
+}
+@-webkit-keyframes blink {
+    0% { opacity: 0; }
+    50% { opacity: 1; }
+    100% { opacity: 0; }
+}
+.blink {
+    -webkit-animation: blink 3s linear infinite;
+    -moz-animation: blink 3s linear infinite;
+    -ms-animation: blink 3s linear infinite;
+    -o-animation: blink 3s linear infinite;
+    animation: blink 3s linear infinite;
+}
+
 .exp-item{
     min-width:280px;
 }
