@@ -1,22 +1,19 @@
 if(Meteor.isClient){
     
-    
     Template.goodbad.icon = function(){
-        
         if(this.status.indexOf('Error:') > -1){
             return "icon-exclamation-sign blink"
         }else{
             return "icon-ok-sign"
         }
-        
-    }
-    Template.goodbad.rendered = function(){
-        console.log(this);
     }
     
     Template.fileexplorer.rendered = function(){
         if (!this._rendered) {
                 this._rendered = true;
+                
+                
+                
                 $("#fileexplorer").isotope({itemSelector : '.exp-item',
                     getSortData : {
                         name : function ( $elem ) {
@@ -182,7 +179,7 @@ if(Meteor.isClient){
                }
                //var expitem = $(Template.exploreritem({filename:val.filename, icon:icon, duration:val.duration}));
                var expitem = $(Template.exploreritem(val));
-               
+               expitem.find(".goodbad").popover();
                
                
                 $("#fileexplorer").append(expitem).isotope( 'addItems', expitem );
