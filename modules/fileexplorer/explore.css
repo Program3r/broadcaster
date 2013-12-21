@@ -1,3 +1,6 @@
+.goodbad{
+    display:none;
+}
 @keyframes blink {
     0% { opacity: 0; }
     50% { opacity: 1; }
