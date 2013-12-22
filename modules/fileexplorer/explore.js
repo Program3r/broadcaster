@@ -184,7 +184,9 @@ if(Meteor.isClient){
                    icon = "icon-film";
                }
                //var expitem = $(Template.exploreritem({filename:val.filename, icon:icon, duration:val.duration}));
+               $.extend(val, {icon:icon})
                var expitem = $(Template.exploreritem(val));
+               console.log(val)
                expitem.find(".goodbad").popover();
                
                
