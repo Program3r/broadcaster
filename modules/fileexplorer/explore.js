@@ -2,7 +2,13 @@ if(Meteor.isClient){
     
     Template.goodbad.icon = function(){
         if(this.status.indexOf('Error:') > -1){
-            return "icon-exclamation-sign blink"
+            
+            if(this.status.indexOf('codec') > -1){
+                this.status = "Video Codec";
+                return "icon-ok-sign"
+            }else{
+                return "icon-exclamation-sign blink";
+            }
         }else{
             return "icon-ok-sign"
         }
