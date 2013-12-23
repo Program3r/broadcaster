@@ -128,7 +128,7 @@ if(Meteor.isServer){
                     for(i=0;i<filelist.length;i++){
                         var execSync = Meteor.require('exec-sync');
                         var result = execSync("ffmpeg -i '"+path+"/"+filelist[i]+"' 2>&1 | grep Duration");
-                        var statustext = execSync("/root/flvcheck -n -f"+path+"/"+filelist[i]);
+                        var statustext = execSync("/root/flvcheck -n -f \""+path+"/"+filelist[i]+"\"");
                         var duration = result.split(",")[0].toString().replace("Duration: ", "");
                         filedata.push({filename:filelist[i], duration:duration.replace(/ /g,''), path:path, results:result, status:statustext});
                     }
