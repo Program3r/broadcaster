@@ -33,6 +33,7 @@
             <h3>Playlist<button class="encode pull-right btn btn-success"><i class="icon-share-alt"></i> Encode</button><button class="clearplaylist pull-right btn btn-warning" style="margin-right:20px;"><i class="icon-minus"></i> Clear Playlist</button></h3>
             <div>{{!>playlistcontrols}}</div>
             <div>{{>timecontrols}}</div>
+            <div>{{>saveload}}</div>
             <div id="progress">
                 <div class="progress progress-striped active">
                   <div class="bar" style="width: 0%;"></div>
@@ -40,7 +41,7 @@
             </div>
             <div id="status">
                 <ul class='out'>
-                    
+
                 </ul>
             </div>
             <div class="well">
@@ -58,6 +59,18 @@
 <template name="timecontrols">
     <input type="text" id="autostarttime" placeholder="Start Now"><button class="erase btn btn-danger" data-original-title="" title=""><i class="icon-remove"></i></button><br/>
 </template>
+
+<template name="saveload">
+    <select id="loadplaylist">
+        {{#each saved}}
+            <option value="{{_id}}">{{name}}</option>
+        {{/each}}
+    </select>
+    <button class="btn bumpup load" placeholder="Empty"><i class="icon-download"></i> Load</button> <button class="btn btn-danger bumpup remove"><i class="icon-minus"></i></button><br>
+    <input type="text" placeholder="Playlist Name" id="saveplaylisttext">
+    <button class="btn bumpup save"><i class="icon-upload"></i> Save</button>
+</template>
+
 
 <template name="playlistcontrols">
     <div class="playlistcontrols">

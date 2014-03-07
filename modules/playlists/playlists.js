@@ -1,9 +1,38 @@
 playlistpersist = new Meteor.Collection("playlistpersist");
-encoder = new Meteor.Collection("encoder");
+savedplaylists = new Meteor.Collection("saved");
 
+encoder = new Meteor.Collection("encoder");
 if(Meteor.isClient){
     Meteor.startup(function(){
         Meteor.call('reCalcTime');
+    });
+    Template.saveload.saved = function(){
+        return savedplaylists.find();
+    }
+    Template.saveload.events({
+       'click .save':function(){
+           var saveval = $("#saveplaylisttext").val();
+           if(saveval > ""){
+               var saveObj = {name:saveval,playlist:playlistpersist.find().fetch()};
+               savedplaylists.insert(saveObj);
+               $("#saveplaylisttext").val("");
+           }
+       },
+       'click .load':function(){
+            var currentLoaded = playlistpersist.find().fetch();
+            $.each(currentLoaded, function(index, val){
+                playlistpersist.remove(val._id);
+            })
+            var loadid = $("#loadplaylist").val();
+            var loadObj = savedplaylists.findOne({_id:loadid});
+            $.each(loadObj.playlist, function(index, val){
+                playlistpersist.insert(val);
+            })
+       },
+       'click .remove':function(){
+           var loadid = $("#loadplaylist").val();
+           savedplaylists.remove(loadid);
+       }
     });
     Template.playlists.rendered = function(){
        // if (!this._rendered) {
@@ -11,14 +40,14 @@ if(Meteor.isClient){
               revert:true,
               receive: function(event, ui){
                 $("#playlists").find(".exp-item").each(function(){
-                   $(this).css("position", ""); 
+                   $(this).css("position", "");
                    $(this).css("top", "");
-                   $(this).css("left", ""); 
+                   $(this).css("left", "");
                    $(this).css("-webkit-transform", "");
                    $(this).tagName = 'li';
-                   
+
                    $(this).find(".removeitem").click(function(){
-                      playlistpersist.remove($(this).parent().attr('id')); 
+                      playlistpersist.remove($(this).parent().attr('id'));
                    });
                });
 
@@ -27,7 +56,7 @@ if(Meteor.isClient){
               stop:function(event, ui){
                     $("#playlists").find(".exp-item").each(function(index){
                         var thisItem = $(this);
-                        
+
                         if(thisItem.hasClass('isotope-item')){
                             var data = {icon:"icon-film", order:index, filename:$(this).attr("data-filename"), duration:$(this).attr("data-duration"), path:$(this).attr("data-path"), results:$(this).attr("data-results")};
                             playlistpersist.insert(data);
@@ -51,7 +80,7 @@ if(Meteor.isClient){
         var items = playlistpersist.find({}).fetch();
         return _.sortBy(items, function(item){return item.order});
     }
-    
+
     //Add Function To Nav
     Template.navigation.events({
         'click addplaylist':function(){
@@ -73,7 +102,7 @@ if(Meteor.isClient){
     Template.playlists.events({
         'click .encodefile':function(){
             var file = files.findOne({_id:this.fileid});
-            
+
             //Meteor.call('runcommand', {command:"ffmpeg -re -i '"+file.path+"/"+file.filename+"' -vcodec libx264 -ab 128k -ac 2 -ar 44100 -r 25 -s 640x480 -vb 660k -f flv 'rtmp://"+Meteor.settings.public.rtmpuser+":"+Meteor.settings.public.rtmppass+"@"+Meteor.settings.public.rtmp+"'"}, function(err, res){
             //});
             console.log("ffmpeg -re -i '"+file.path+"/"+file.filename+"' -vcodec libx264 -ab 128k -ac 2 -ar 44100 -r 25 -s 640x480 -vb 660k -f flv 'rtmp://"+Meteor.settings.public.rtmpuser+":"+Meteor.settings.public.rtmppass+"@"+Meteor.settings.public.rtmp+"'");
@@ -83,8 +112,8 @@ if(Meteor.isClient){
             $(".encode").addClass("btn-danger");
             $(".encode").addClass("disabled");
             $(".clearplaylist").addClass("disabled");
-            
-            
+
+
             function go(){
                 var options = [];
                 $("#playlists .playlistcontainer .exp-item").each(function(){
@@ -93,31 +122,31 @@ if(Meteor.isClient){
                 });
                 Meteor.call('encode', options);
             }
-            
-            
-            
+
+
+
             if($("#autostarttime").val() > ""){
                 function fm(n){return n<10? '0'+n:''+n;}
                 var now = new Date().getTime();
                 var inthefuture = new Date();
                 var starttime = $("#autostarttime").val();
                 var timesplit = starttime.split(":");
-                
+
                 inthefuture.setHours(timesplit[0]);
                 inthefuture.setMinutes(timesplit[1]);
                 inthefuture.setSeconds(timesplit[2]);
-                
+
                 var futurems = inthefuture.getTime() - now;
-                
+
                 setTimeout(function(){go();}, futurems);
-                
+
             }else{
                 go();
             }
-            
-            
-            
-            
+
+
+
+
         },
         'click .clearplaylist':function(){
             $.each(playlistpersist.find().fetch(), function(){playlistpersist.remove(this._id)});
@@ -133,14 +162,14 @@ if(Meteor.isClient){
                 date.setMinutes(date.getMinutes()+parseInt(times[1]));
                 date.setHours(date.getHours()+parseInt(times[0]));
             });
-            
-            
-            
-            $("#time").text(date);
-            
 
-            
-            
+
+
+            $("#time").text(date);
+
+
+
+
             setTimeout(function(){Meteor.call('reCalcTime');}, 1000);
        },
         'clearplaylists':function(){
@@ -161,19 +190,19 @@ if(Meteor.isServer){
               if (err) throw err;
               console.log('successfully deleted '+options.file);
             });
-            
+
         },
         'encode':function(options){
-            
+
             if(Meteor.isServer){
                 var encoderitems = encoder.find({}).fetch();
                 for(i=0;i<encoderitems.length;i++){
                     encoder.remove(encoderitems[i]._id);
                 }
-                
-                
+
+
                 var time = 1;
-                
+
                 for(i=0;i<options.length;i++){
                     var theseopt = options[i];
 
@@ -197,7 +226,7 @@ if(Meteor.isServer){
                 }
                 Meteor.call('encodeNext');
             }
-            
+
         },
         'encodeNext':function(){
           console.log('encoding!');
@@ -205,15 +234,15 @@ if(Meteor.isServer){
             Fiber(function() {
 
                 var file = encoder.findOne({});
-                
+
                 if(file != undefined){
                     //Meteor.call('encodeNext');
-                    
+
                     Meteor.call('remcmd', {channel:"ffmpeg", sock:{file:file}, cmd:"ffmpeg -re -i '"+file.path+"/"+file.filename+"' -vcodec libx264 -ab 128k -ac 2 -ar 44100 -r 25 -s 640x480 -vb 320k -f flv 'rtmp://"+Meteor.settings.rtmpuser+":"+Meteor.settings.rtmppass+"@"+Meteor.settings.rtmp+"'", callback:function(){
-                        
+
                         encoder.remove(encoder.findOne({})._id);
                         Meteor.call('encodeNext');
-                        
+
                     }});
                     //Meteor.call('remcmd', {cmd:"ffmpeg -re -i '"+file.path+"/"+file.filename+"' -vcodec libx264 -ab 128k -ac 2 -ar 44100 -r 25 -s 640x480 -vb 320k -f flv 'rtmp://"+Meteor.settings.rtmpuser+":"+Meteor.settings.rtmppass+"@"+Meteor.settings.rtmp+"'"});
                 }else{
@@ -222,5 +251,5 @@ if(Meteor.isServer){
             }).run();
         }
     });
-    
+
 }

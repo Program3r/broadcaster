@@ -9,6 +9,9 @@
 #playlists tbody:nth-child(even) tr td{
     background-color:#E8E8E8;
 }
+.bumpup{
+    margin-bottom: 10px;
+}
 #status .out{
     overflow-y: scroll;
     height: 100px;
