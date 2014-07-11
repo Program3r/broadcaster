@@ -57,7 +57,7 @@
 </template>
 
 <template name="timecontrols">
-    <input type="text" id="autostarttime" placeholder="Start Now"><button class="erase btn btn-danger" data-original-title="" title=""><i class="icon-remove"></i></button><br/>
+    <button class="btn repeat bumpup {{#if repeat}}btn-success{{else}}btn-danger{{/if}}"><i class="icon-repeat {{#if repeat}}spin{{/if}}"></i> Repeat</button>&nbsp;&nbsp;&nbsp;<input type="text" id="autostarttime" placeholder="Start Now"><button class="erase btn btn-danger" data-original-title="" title=""><i class="icon-remove"></i></button><br/>
 </template>
 
 <template name="saveload">
