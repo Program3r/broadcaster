@@ -2,5 +2,6 @@
     "express":"3.3.4",
     "socket.io":"0.9.16",
     "carrier": "0.2.0",
-    "nexpect":"0.2.4"
+    "nexpect":"0.2.4",
+    "execSync":"1.0.1"
 }
